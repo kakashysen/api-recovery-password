@@ -1,0 +1,75 @@
+<head>  
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity=" sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+</head>  
+<script type="text/javascript">
+  // detectamos cuando el usuario deja de presionar una tecla y 
+  //hacemos la validación de la contraseña.
+  $(document).ready(function() {
+      $("#user_password").keyup(validatePassword);
+      $("#user_password_confirmation").keyup(validatePassword);
+  });
+
+  function validatePassword() {  
+    var password = $("#user_password").val();
+    var password_confirmation = $("#user_password_confirmation").val();
+
+    if (password.length < 8) {
+        formValid(false)
+      $('input:submit').attr("value", "Minimo 8 carácteres");
+    }
+    else {
+        if(password == password_confirmation) {
+       formValid(true)
+       $('input:submit').attr("value", "Cambiar contraseña");
+         }
+      else {
+          formValid(false)
+          $('input:submit').attr("value", "contraseñas no coinciden");
+      }
+    }
+  }
+
+  // Cambia el estilo del formulario para resaltar las cajas
+  // de texto, cuando hay un error agrega un border rojo y 
+  // cuando esta correcto agrega uno verde 
+  function formValid(valid) {  
+    if (valid) {
+        $("#password").removeClass("has-error");
+        $("#password").addClass("has-success");
+        $("#password_confirmation").removeClass("has-error");
+        $("#password_confirmation").addClass("has-success");
+        $('input:submit').attr("disabled", false);
+    }
+    else {
+        $("#password").removeClass("has-success");
+        $("#password").addClass("has-error");
+        $("#password_confirmation").removeClass("has-success");
+        $("#password_confirmation").addClass("has-error");
+        $('input:submit').attr("disabled", true);
+    } 
+  }
+</script>
+<% flash.each do |key, message| %>  
+    <div class="alert alert-<%= key %>" role="alert"><p style="text-align:center"><%= message %></p></div>
+<% end %>
+
+<% if @status == 1 %>  
+    <div class="container">
+        <div class="Absolute-Center is-Responsive">
+            <div class="col-sm-12 col-md-6 col-md-offset-3">
+            <%= form_for @user, url: {action: "reset"} do |f| %>
+              <%= hidden_field_tag :email, @user.email %>
+              <div id="password" class="form-group">
+                <%= f.password_field :password, class: 'form-control', placeholder: 'contraseña'%>
+              </div>
+              <div id="password_confirmation" class="form-group">
+                <%= f.password_field :password_confirmation, class: 'form-control', placeholder: 'Confirma contraseña' %>
+              </div>
+              <%= f.submit "Cambiar contraseña", disabled: true, class: 'btn btn-primary btn-lg btn-block' %>
+            <% end %>
+        </div>
+      </div>
+  </div>
+<% end %>  
